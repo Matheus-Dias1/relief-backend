@@ -5,9 +5,9 @@ from .models import History, Bookmarks
 class HistorySerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = History
-        fields = ('url', 'title')
+        fields = '__all__'
 
 class BookmarksSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Bookmarks
-        fields = ('url', 'title')
+        fields = '__all__'
