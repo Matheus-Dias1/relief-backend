@@ -12,4 +12,4 @@ class HistorySerializer(serializers.HyperlinkedModelSerializer):
 class BookmarksSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Bookmarks
-        fields = '__all__'
+        fields = ('id', 'url', 'title', 'embed_url')
