@@ -6,9 +6,9 @@ from .models import History, Bookmarks
 
 
 class HistoryViewSet(viewsets.ModelViewSet):
-    queryset = History.objects.all().order_by('title')
+    queryset = History.objects.all()
     serializer_class = HistorySerializer
 
 class BookmarksViewSet(viewsets.ModelViewSet):
-    queryset = Bookmarks.objects.all().order_by('title')
+    queryset = Bookmarks.objects.all()
     serializer_class = BookmarksSerializer

@@ -15,7 +15,7 @@ class History(models.Model):
 
 
 class Bookmarks(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
+    id = models.UUIDField(primary_key=True, default=uuid4, editable=True)
     url = models.CharField(max_length=255)
     embed_url = models.CharField(max_length=255)
     title = models.CharField(max_length=255)
