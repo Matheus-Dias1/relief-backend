@@ -1,14 +1,62 @@
-const connection = require('../database/connection');
+const connection = require("../database/connection");
 
 module.exports = {
-  async indexHistory(req, res){
+  async indexHistory(_, res) {
     try {
-      const history = await connection('api_history')
-        .select('*');
+      const history = await connection("history")
+        .select("videoID", "title")
+        .orderBy("id", "desc");
       return res.json(history);
     } catch (e) {
-      console.error('Unexpected error indexing history:', e)
-      return response.sendStatus(422);
+      console.error("Unexpected error indexing history:", e);
+      return res.sendStatus(422);
     }
-  }
-}
+  },
+
+  async addToHistory(req, res) {
+    const { title, videoID } = req.body;
+    try {
+      await connection("history").insert({
+        videoID,
+        title,
+      });
+      return res.sendStatus(201);
+    } catch (e) {
+      console.error("Unexpected error adding to history:", e);
+      return res.sendStatus(422);
+    }
+  },
+
+  async toggleBookmark(req, res) {
+    const { id } = req.params;
+    try {
+      const { bookmarked: oldValue } = await connection("history")
+        .select("bookmarked")
+        .where("videoID", id)
+        .first();
+
+      const bookmarked = Math.abs(oldValue - 1);
+      await connection("history")
+        .update("bookmarked", bookmarked)
+        .where("videoID", id);
+      return res.sendStatus(200);
+    } catch (e) {
+      console.error("Unexpected error adding to bookmarks:", e);
+      return res.sendStatus(422);
+    }
+  },
+
+  async indexBookmarks(_, res) {
+    try {
+      const bookmarks = await connection("history")
+        .distinct("videoID", "title")
+        .orderBy("id", "desc")
+        .where("bookmarked", 1);
+
+      return res.json(bookmarks);
+    } catch (e) {
+      console.error("Unexpected error indexing bookmarks:", e);
+      return res.sendStatus(422);
+    }
+  },
+};
