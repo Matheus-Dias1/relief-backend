@@ -41,7 +41,7 @@ module.exports = {
         .where("videoID", id);
       return res.sendStatus(200);
     } catch (e) {
-      console.error("Unexpected error adding to bookmarks:", e);
+      console.error("Unexpected error toggling bookmark:", e);
       return res.sendStatus(422);
     }
   },
