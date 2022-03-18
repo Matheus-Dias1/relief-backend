@@ -14,11 +14,13 @@ module.exports = {
   },
 
   async addToHistory(req, res) {
-    const { title, videoID } = req.body;
     try {
-      await connection("history").insert({
-        videoID,
-        title,
+      req.body.forEach(async (link) => {
+        const { title, videoID } = link;
+        await connection("history").insert({
+          videoID,
+          title,
+        });
       });
       return res.sendStatus(201);
     } catch (e) {
@@ -28,17 +30,29 @@ module.exports = {
   },
 
   async toggleBookmark(req, res) {
-    const { id } = req.params;
-    try {
-      const { bookmarked: oldValue } = await connection("history")
-        .select("bookmarked")
-        .where("videoID", id)
-        .first();
+    const ids = [];
 
-      const bookmarked = Math.abs(oldValue - 1);
-      await connection("history")
-        .update("bookmarked", bookmarked)
-        .where("videoID", id);
+    // if a bookmark is toggled an even amount of times
+    // in the same request, it's original value would remain
+    req.body.forEach((id) => {
+      const otherIndex = ids.indexOf(id);
+      if (otherIndex !== -1) ids.splice(otherIndex, 1);
+      else ids.push(id);
+    });
+
+    try {
+      ids.forEach(async (id) => {
+        const { bookmarked: oldValue } = await connection("history")
+          .select("bookmarked")
+          .where("videoID", id)
+          .first();
+
+        const bookmarked = Math.abs(oldValue - 1);
+        await connection("history")
+          .update("bookmarked", bookmarked)
+          .where("videoID", id);
+      });
+
       return res.sendStatus(200);
     } catch (e) {
       console.error("Unexpected error toggling bookmark:", e);

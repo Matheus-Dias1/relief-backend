@@ -6,6 +6,6 @@ routes.get("/api/history", VideoController.indexHistory);
 routes.post("/api/history", VideoController.addToHistory);
 
 routes.get("/api/bookmarks", VideoController.indexBookmarks);
-routes.put("/api/bookmarks/:id", VideoController.toggleBookmark);
+routes.put("/api/bookmarks/", VideoController.toggleBookmark);
 
 module.exports = routes;
